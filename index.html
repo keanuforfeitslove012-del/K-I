@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Ivy - Tap If You Remember Us</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
         
         * {
             margin: 0;
@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: 'Crimson Text', serif;
+            font-family: 'Dancing Script', cursive;
             overflow: hidden;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
@@ -33,7 +33,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: inherit;
             transition: opacity 1s ease-out, visibility 1s;
         }
 
@@ -48,19 +48,18 @@
             color: #e94560;
             padding: 30px 60px;
             font-size: 2.5rem;
-            font-family: 'Dancing Script', cursive;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
             animation: pulse 2s infinite;
+            font-family: inherit;
         }
 
         .tap-button:hover {
             background: #e94560;
             color: white;
             transform: scale(1.1);
-            box-shadow: 0 0 50px rgba(233, 69, 96, 0.6);
         }
 
         @keyframes pulse {
@@ -73,7 +72,6 @@
             font-size: 1.5rem;
             margin-top: 20px;
             opacity: 0.8;
-            font-family: 'Dancing Script', cursive;
         }
 
         /* Main Content */
@@ -82,31 +80,21 @@
             transition: opacity 2s ease-in;
             min-height: 100vh;
             position: relative;
-            padding: 20px;
+            display: none;
         }
 
         .main-content.visible {
             opacity: 1;
+            display: block;
         }
 
-        /* Floating Elements Container */
-        .floating-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
+        /* Floating Elements */
         .floating-element {
             position: absolute;
             cursor: pointer;
-            pointer-events: auto;
             font-size: 2rem;
             animation: float 6s ease-in-out infinite;
-            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+            z-index: 10;
             transition: transform 0.3s;
         }
 
@@ -116,9 +104,7 @@
 
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-20px) rotate(5deg); }
-            50% { transform: translateY(-10px) rotate(-5deg); }
-            75% { transform: translateY(-30px) rotate(3deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
         }
 
         /* Note Popup */
@@ -127,16 +113,15 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
-            background: rgba(255, 255, 255, 0.95);
+            background: white;
             padding: 30px;
             border-radius: 20px;
             max-width: 400px;
+            width: 90%;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             z-index: 200;
-            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            font-family: 'Dancing Script', cursive;
-            color: #333;
+            transition: transform 0.3s;
         }
 
         .note-popup.active {
@@ -151,8 +136,8 @@
 
         .note-popup p {
             font-size: 1.3rem;
-            line-height: 1.6;
             color: #555;
+            font-family: Arial, sans-serif;
         }
 
         .close-btn {
@@ -164,7 +149,6 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: #999;
-            transition: color 0.3s;
         }
 
         .close-btn:hover {
@@ -180,18 +164,15 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 150;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
+            display: none;
         }
 
         .overlay.active {
-            opacity: 1;
-            visibility: visible;
+            display: block;
         }
 
-        /* Clown Box (Secret Message) - CENTERED */
-        .clown-box-container {
+        /* Envelope - CENTERED */
+        .envelope-container {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -199,41 +180,40 @@
             z-index: 50;
         }
 
-        .clown-box {
-            width: 140px;
-            height: 140px;
-            background: linear-gradient(145deg, #ff6b6b, #ee5a6f);
-            border-radius: 20px;
+        .envelope {
+            width: 150px;
+            height: 110px;
+            background: linear-gradient(145deg, #f5f5f5, #e0e0e0);
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(238, 90, 111, 0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             transition: all 0.3s;
+            border: 2px solid #d4af37;
             position: relative;
-            overflow: hidden;
         }
 
-        .clown-box:hover {
+        .envelope:hover {
             transform: scale(1.1);
-            box-shadow: 0 15px 40px rgba(238, 90, 111, 0.6);
+            box-shadow: 0 15px 40px rgba(233, 69, 96, 0.4);
         }
 
-        .clown-face {
-            font-size: 3.5rem;
-            animation: bounce 1s infinite;
+        .envelope-emoji {
+            font-size: 3rem;
+            animation: smile 2s infinite;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes smile {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
 
-        .clown-text {
-            color: white;
-            font-size: 1rem;
-            margin-top: 5px;
+        .envelope-text {
+            color: #8b4513;
+            font-size: 1.2rem;
             font-weight: bold;
         }
 
@@ -244,14 +224,15 @@
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
-            padding: 40px;
-            border-radius: 30px;
-            max-width: 600px;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
             z-index: 300;
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: transform 0.3s;
             border: 3px solid #ffb6c1;
         }
 
@@ -261,47 +242,37 @@
 
         .long-message-modal h2 {
             color: #e94560;
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            margin-bottom: 15px;
             text-align: center;
         }
 
         .long-message-modal p {
-            font-size: 1.2rem;
-            line-height: 2;
+            font-size: 1.1rem;
+            line-height: 1.8;
             color: #444;
-            text-align: justify;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            font-family: Arial, sans-serif;
         }
 
         .signature {
             text-align: right;
-            font-family: 'Dancing Script', cursive;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: #e94560;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
-        /* Volcanoes - Distributed */
+        /* Volcanoes */
         .volcano {
             position: fixed;
-            font-size: 4rem;
+            font-size: 3.5rem;
             cursor: pointer;
             transition: transform 0.3s;
-            filter: drop-shadow(0 0 20px rgba(255, 100, 100, 0.5));
             z-index: 40;
         }
 
         .volcano:hover {
             transform: scale(1.2);
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: scale(1.2) rotate(0deg); }
-            25% { transform: scale(1.2) rotate(-5deg); }
-            75% { transform: scale(1.2) rotate(5deg); }
         }
 
         .volcano-1 { top: 10%; left: 5%; }
@@ -309,16 +280,12 @@
         .volcano-3 { bottom: 10%; left: 5%; }
         .volcano-4 { bottom: 10%; right: 5%; }
 
-        .eruption {
+        .love-emoji {
             position: fixed;
+            font-size: 2rem;
+            animation: erupt 2s ease-out forwards;
             pointer-events: none;
             z-index: 35;
-        }
-
-        .love-emoji {
-            position: absolute;
-            font-size: 2rem;
-            animation: erupt 3s ease-out forwards;
         }
 
         @keyframes erupt {
@@ -336,47 +303,29 @@
         .main-title {
             text-align: center;
             color: #eaeaea;
-            font-family: 'Dancing Script', cursive;
-            font-size: 4rem;
-            margin-top: 30px;
+            font-size: 3.5rem;
+            margin-top: 40px;
             text-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
-            animation: glow 3s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 0 30px rgba(233, 69, 96, 0.5); }
-            50% { text-shadow: 0 0 50px rgba(233, 69, 96, 0.8), 0 0 70px rgba(233, 69, 96, 0.4); }
         }
 
         .subtitle {
             text-align: center;
             color: #a0a0a0;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             margin-top: 10px;
-            font-style: italic;
         }
 
-        /* Flirty Text */
-        .flirty-text-container {
+        /* Flirty Emojis */
+        .flirty-emoji {
             position: fixed;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+            font-size: 2rem;
+            animation: fadeFloat 3s ease-in-out infinite;
             z-index: 20;
         }
 
-        .flirty-text {
-            position: absolute;
-            font-family: 'Dancing Script', cursive;
-            color: rgba(233, 69, 96, 0.6);
-            font-size: 1.5rem;
-            text-shadow: 0 0 10px rgba(233, 69, 96, 0.3);
-            animation: fadeFloat 4s ease-in-out infinite;
-        }
-
         @keyframes fadeFloat {
-            0%, 100% { opacity: 0.3; transform: translateY(0); }
-            50% { opacity: 0.8; transform: translateY(-10px); }
+            0%, 100% { opacity: 0.4; transform: translateY(0); }
+            50% { opacity: 0.9; transform: translateY(-15px); }
         }
 
         /* Music Control */
@@ -391,49 +340,11 @@
             padding: 10px 20px;
             border-radius: 30px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            font-family: 'Crimson Text', serif;
+            font-family: Arial, sans-serif;
         }
 
         .music-control:hover {
             background: rgba(233, 69, 96, 0.3);
-            border-color: #e94560;
-        }
-
-        .music-control.playing {
-            animation: musicPulse 2s infinite;
-        }
-
-        @keyframes musicPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(233, 69, 96, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(233, 69, 96, 0); }
-        }
-
-        /* Sparkles */
-        .sparkle {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: white;
-            border-radius: 50%;
-            animation: sparkle 3s linear infinite;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
-        /* Hint text */
-        .hint-text {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255,255,255,0.4);
-            font-size: 0.9rem;
-            z-index: 30;
         }
     </style>
 </head>
@@ -450,95 +361,70 @@
         <h1 class="main-title">For Ivy</h1>
         <p class="subtitle">Some connections never fade...</p>
 
-        <!-- Flirty Text -->
-        <div class="flirty-text-container" id="flirtyContainer"></div>
-
         <!-- Music Control -->
-        <div class="music-control" id="musicBtn" onclick="toggleMusic()">
-            🎵 Play Music
-        </div>
+        <div class="music-control" onclick="toggleMusic()" id="musicBtn">🎵 Play</div>
+
+        <!-- Flirty Emojis -->
+        <div class="flirty-emoji" style="top: 15%; left: 10%; animation-delay: 0s;">😩</div>
+        <div class="flirty-emoji" style="top: 25%; right: 10%; animation-delay: 0.5s;">😩</div>
+        <div class="flirty-emoji" style="top: 70%; left: 8%; animation-delay: 1s;">😩</div>
+        <div class="flirty-emoji" style="top: 80%; right: 8%; animation-delay: 1.5s;">😩</div>
+        <div class="flirty-emoji" style="top: 45%; left: 5%; animation-delay: 2s;">😩</div>
+        <div class="flirty-emoji" style="top: 55%; right: 5%; animation-delay: 2.5s;">😩</div>
 
         <!-- Floating Elements Container -->
-        <div class="floating-container" id="floatingContainer"></div>
+        <div id="floatingContainer"></div>
 
-        <!-- Overlay for popups -->
-        <div class="overlay" id="overlay" onclick="closeAllPopups()"></div>
+        <!-- Overlay -->
+        <div class="overlay" id="overlay" onclick="closeAll()"></div>
 
         <!-- Note Popup -->
         <div class="note-popup" id="notePopup">
             <button class="close-btn" onclick="closeNote()">×</button>
-            <h3 id="noteTitle">Memory</h3>
-            <p id="noteContent">Content here...</p>
+            <h3 id="noteTitle"></h3>
+            <p id="noteContent"></p>
         </div>
 
-        <!-- Clown Box - CENTERED -->
-        <div class="clown-box-container">
-            <div class="clown-box" onclick="openLongMessage()">
-                <div class="clown-face">🤡</div>
-                <div class="clown-text">Open Me</div>
+        <!-- Envelope -->
+        <div class="envelope-container">
+            <div class="envelope" onclick="openLetter()">
+                <span class="envelope-emoji">💌</span>
+                <span class="envelope-text">Open</span>
             </div>
         </div>
 
-        <!-- Long Message Modal -->
-        <div class="long-message-modal" id="longMessageModal">
-            <button class="close-btn" onclick="closeLongMessage()" style="font-size: 2rem; top: 20px; right: 25px;">×</button>
-            <h2>Dear Ivy,</h2>
-            <p>
-                There are moments in life when words fail to capture the weight of what we feel. This is one of those moments, but I'll try anyway.
-            </p>
-            <p>
-                I think about the conversations we used to have—the way time seemed to stop when we talked, how the world outside faded into background noise. There was a rhythm to us, a dance of words and silences that felt like home.
-            </p>
-            <p>
-                Then life happened. We stopped talking. Days turned into weeks, weeks into months. But here's the thing about sparks—they don't die easily. They smolder, hidden beneath the ash of everyday life, waiting for a breath of air to reignite.
-            </p>
-            <p>
-                I feel that spark every time I think of you. In the quiet moments, in the loud ones, in the spaces between heartbeats. It's not about the past, nor is it purely about the future. It's about this invisible thread that still connects us, fragile but unbroken.
-            </p>
-            <p>
-                Maybe we've changed. Maybe the world has moved us in different directions. But some connections are written in the stars, Ivy. Ours feels like one of them.
-            </p>
-            <p>
-                I don't know where we go from here. I don't have a map or a plan. All I have is this truth: you mattered, you matter, and you will always matter. The spark is real. The connection is real. And sometimes, that's enough to light the way forward.
-            </p>
-            <p class="signature">With everything unsaid and everything felt,<br>K</p>
+        <!-- Long Message -->
+        <div class="long-message-modal" id="longMessage">
+            <button class="close-btn" onclick="closeLetter()" style="font-size: 2rem;">×</button>
+            <h2>My Dearest Ivy,</h2>
+            <p>Every moment without you feels like a lifetime. I miss the way you make my heart race with just a simple look.</p>
+            <p>The silence between us speaks louder than words ever could. I crave your voice, your laugh, your everything.</p>
+            <p>They say distance makes the heart grow fonder, but this is torture. I need you here, now, always.</p>
+            <p>You are the first thought in my morning and the last prayer at night. No one compares to you, Ivy.</p>
+            <p>This spark between us? It's a wildfire waiting to happen. I'm burning for you.</p>
+            <p class="signature">Yours completely,<br>K</p>
         </div>
 
-        <!-- Four Volcanoes - Distributed in corners -->
-        <div class="volcano volcano-1" onclick="eruptVolcano(this)" title="Click to erupt love!">🌋</div>
-        <div class="volcano volcano-2" onclick="eruptVolcano(this)" title="Click to erupt love!">🌋</div>
-        <div class="volcano volcano-3" onclick="eruptVolcano(this)" title="Click to erupt love!">🌋</div>
-        <div class="volcano volcano-4" onclick="eruptVolcano(this)" title="Click to erupt love!">🌋</div>
-
-        <p class="hint-text">Click the volcanoes for a surprise 💕</p>
+        <!-- Four Volcanoes -->
+        <div class="volcano volcano-1" onclick="erupt(this)">🌋</div>
+        <div class="volcano volcano-2" onclick="erupt(this)">🌋</div>
+        <div class="volcano volcano-3" onclick="erupt(this)">🌋</div>
+        <div class="volcano volcano-4" onclick="erupt(this)">🌋</div>
     </div>
 
-    <!-- Audio Element -->
+    <!-- Audio -->
     <audio id="bgMusic" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // Notes data
         const notes = [
-            { emoji: '🦋', title: 'The First Hello', content: 'Do you remember how it all began? That first conversation that felt like coming home...' },
-            { emoji: '💖', title: 'Late Nights', content: 'Those 2 AM talks about everything and nothing. The world was asleep, but we were alive.' },
-            { emoji: '🦋', title: 'Your Laugh', content: 'I can still hear it. The kind of laugh that makes everyone around you smile without knowing why.' },
-            { emoji: '💖', title: 'The Silence', content: 'Even when we stopped talking, the space you occupied in my thoughts never emptied.' },
-            { emoji: '🦋', title: 'What If', content: 'Two words that haunt me sometimes. But maybe "what is" is more important than "what if".' },
-            { emoji: '💖', title: 'The Spark', content: 'They say embers remain long after the fire dies. Our spark never stopped glowing, Ivy.' },
-            { emoji: '🦋', title: 'Random Thoughts', content: 'I see something beautiful and think of you. I hear a song and think of you. You are everywhere.' },
-            { emoji: '💖', title: 'Courage', content: 'It took courage to make this. It takes courage to feel. You are worth every ounce of bravery.' }
-        ];
-
-        // Flirty texts
-        const flirtyTexts = [
-            "Ivy, you're the reason I believe in magic ✨",
-            "Is it hot in here or is it just you? 🔥",
-            "You've been running through my mind all day... and night 💭",
-            "I must be a snowflake, because I've fallen for you ❄️",
-            "Are you a camera? Because every time I look at you, I smile 📸",
-            "If you were a vegetable, you'd be a cute-cumber 🥒"
+            { emoji: '🦋', title: 'The First Hello', content: 'Remember how it all began? That first conversation felt like coming home.' },
+            { emoji: '💖', title: 'Late Nights', content: '2 AM talks about everything. The world slept, but we were alive together.' },
+            { emoji: '🦋', title: 'Your Laugh', content: 'I still hear it. The kind that makes everyone smile without knowing why.' },
+            { emoji: '💖', title: 'The Silence', content: 'Even when we stopped talking, you never left my thoughts.' },
+            { emoji: '🦋', title: 'The Spark', content: 'Embers remain after the fire dies. Our spark never stopped glowing.' },
+            { emoji: '💖', title: 'Everywhere', content: 'I see something beautiful and think of you. You are everywhere to me.' }
         ];
 
         let musicPlaying = false;
@@ -546,50 +432,93 @@
         function enterSite() {
             document.getElementById('initialScreen').classList.add('hidden');
             document.getElementById('mainContent').classList.add('visible');
-            createFloatingElements();
-            createFlirtyTexts();
-            createSparkles();
-            
-            // Auto-play music attempt
-            setTimeout(() => {
-                toggleMusic();
-            }, 1000);
+            createFloating();
+            setTimeout(toggleMusic, 1000);
         }
 
-        function createFloatingElements() {
+        function createFloating() {
             const container = document.getElementById('floatingContainer');
-            const isMobile = window.innerWidth < 768;
-            const count = isMobile ? 6 : 12;
-            
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < 8; i++) {
                 const el = document.createElement('div');
                 const note = notes[i % notes.length];
                 el.className = 'floating-element';
                 el.textContent = note.emoji;
-                el.style.left = Math.random() * 90 + 5 + '%';
-                el.style.top = Math.random() * 70 + 15 + '%';
-                el.style.animationDelay = Math.random() * 6 + 's';
-                el.style.animationDuration = (4 + Math.random() * 4) + 's';
-                
-                el.onclick = (e) => {
-                    e.stopPropagation();
-                    showNote(note);
-                };
-                
+                el.style.left = Math.random() * 80 + 10 + '%';
+                el.style.top = Math.random() * 60 + 20 + '%';
+                el.style.animationDelay = Math.random() * 5 + 's';
+                el.onclick = () => showNote(note);
                 container.appendChild(el);
             }
         }
 
-        function createFlirtyTexts() {
-            const container = document.getElementById('flirtyContainer');
-            const positions = [
-                { top: '15%', left: '10%' },
-                { top: '25%', right: '10%' },
-                { top: '65%', left: '5%' },
-                { top: '75%', right: '5%' },
-                { top: '40%', left: '3%' },
-                { top: '55%', right: '3%' }
-            ];
+        function showNote(note) {
+            document.getElementById('noteTitle').textContent = note.title;
+            document.getElementById('noteContent').textContent = note.content;
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('notePopup').classList.add('active');
+        }
 
-            flirtyTexts.forEach((text, index) => {
-             
+        function closeNote() {
+            document.getElementById('notePopup').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function openLetter() {
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('longMessage').classList.add('active');
+        }
+
+        function closeLetter() {
+            document.getElementById('longMessage').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        }
+
+        function closeAll() {
+            closeNote();
+            closeLetter();
+        }
+
+        function erupt(volcano) {
+            const rect = volcano.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'love-emoji';
+                    heart.textContent = ['❤️','💖','💕','💗'][Math.floor(Math.random()*4)];
+                    heart.style.left = x + 'px';
+                    heart.style.top = y + 'px';
+                    
+                    const angle = (Math.PI * 2 * i) / 20;
+                    const dist = 100 + Math.random() * 150;
+                    heart.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+                    heart.style.setProperty('--ty', Math.sin(angle) * dist - 100 + 'px');
+                    
+                    document.body.appendChild(heart);
+                    setTimeout(() => heart.remove(), 2000);
+                }, i * 30);
+            }
+        }
+
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const btn = document.getElementById('musicBtn');
+            
+            if (musicPlaying) {
+                music.pause();
+                btn.textContent = '🎵 Play';
+            } else {
+                music.play().catch(() => {});
+                btn.textContent = '🎶 Pause';
+            }
+            musicPlaying = !musicPlaying;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeAll();
+        });
+    </script>
+</body>
+</html>
