@@ -3,26 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Ivy - Tap If You Remember Us</title>
+    <title>For Ivy</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Dancing Script', cursive;
             overflow: hidden;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
-            position: relative;
         }
 
-        /* Initial Screen */
-        .initial-screen {
+        #startScreen {
             position: fixed;
             top: 0;
             left: 0;
@@ -34,16 +28,13 @@
             align-items: center;
             z-index: 1000;
             background: inherit;
-            transition: opacity 1s ease-out, visibility 1s;
         }
 
-        .initial-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+        #startScreen.hidden {
+            display: none;
         }
 
-        .tap-button {
+        .tapBtn {
             background: transparent;
             border: 3px solid #e94560;
             color: #e94560;
@@ -51,16 +42,13 @@
             font-size: 2.5rem;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
-            animation: pulse 2s infinite;
             font-family: inherit;
+            animation: pulse 2s infinite;
         }
 
-        .tap-button:hover {
+        .tapBtn:hover {
             background: #e94560;
             color: white;
-            transform: scale(1.1);
         }
 
         @keyframes pulse {
@@ -68,48 +56,89 @@
             50% { transform: scale(1.05); }
         }
 
-        .initial-text {
+        .ki {
             color: #eaeaea;
             font-size: 1.5rem;
             margin-top: 20px;
-            opacity: 0.8;
         }
 
-        /* Main Content */
-        .main-content {
-            opacity: 0;
-            transition: opacity 2s ease-in;
+        #mainScreen {
+            display: none;
             min-height: 100vh;
             position: relative;
-            visibility: hidden;
         }
 
-        .main-content.visible {
-            opacity: 1;
-            visibility: visible;
+        #mainScreen.visible {
+            display: block;
         }
 
-        /* Floating Elements */
-        .floating-element {
-            position: absolute;
+        h1 {
+            text-align: center;
+            color: #eaeaea;
+            font-size: 3.5rem;
+            margin-top: 40px;
+            text-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
+        }
+
+        .env {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 110px;
+            background: linear-gradient(145deg, #f5f5f5, #e0e0e0);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            border: 2px solid #d4af37;
+            z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .env:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 15px 40px rgba(233, 69, 96, 0.4);
+        }
+
+        .env span:first-child {
+            font-size: 3rem;
+            animation: smile 2s infinite;
+        }
+
+        @keyframes smile {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .env span:last-child {
+            color: #8b4513;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .heart {
+            position: absolute;
             font-size: 2rem;
-            animation: float 6s ease-in-out infinite;
+            cursor: pointer;
+            animation: float 4s ease-in-out infinite;
             z-index: 10;
             transition: transform 0.3s;
         }
 
-        .floating-element:hover {
+        .heart:hover {
             transform: scale(1.3);
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(5deg); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
         }
 
-        /* Note Popup */
-        .note-popup {
+        .modal {
             position: fixed;
             top: 50%;
             left: 50%;
@@ -125,23 +154,26 @@
             transition: transform 0.3s;
         }
 
-        .note-popup.active {
+        .modal.open {
             transform: translate(-50%, -50%) scale(1);
         }
 
-        .note-popup h3 {
-            color: #e94560;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 150;
+            display: none;
         }
 
-        .note-popup p {
-            font-size: 1.3rem;
-            color: #555;
-            font-family: Arial, sans-serif;
+        #overlay.open {
+            display: block;
         }
 
-        .close-btn {
+        .xBtn {
             position: absolute;
             top: 10px;
             right: 15px;
@@ -152,473 +184,340 @@
             color: #999;
         }
 
-        .close-btn:hover {
+        .xBtn:hover {
             color: #e94560;
         }
 
-        /* Overlay */
-        .overlay {
+        .vol {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 150;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Envelope - CENTERED */
-        .envelope-container {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
-        }
-
-        .envelope {
-            width: 150px;
-            height: 110px;
-            background: linear-gradient(145deg, #f5f5f5, #e0e0e0);
-            border-radius: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            border: 2px solid #d4af37;
-        }
-
-        .envelope:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 40px rgba(233, 69, 96, 0.4);
-        }
-
-        .envelope-emoji {
             font-size: 3rem;
-            animation: smile 2s infinite;
-        }
-
-        @keyframes smile {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .envelope-text {
-            color: #8b4513;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        /* Long Message Modal */
-        .long-message-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
-            padding: 30px;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-            z-index: 300;
-            transition: transform 0.3s;
-            border: 3px solid #ffb6c1;
-        }
-
-        .long-message-modal.active {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .long-message-modal h2 {
-            color: #e94560;
-            font-size: 2rem;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .long-message-modal p {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #444;
-            margin-bottom: 10px;
-            font-family: Arial, sans-serif;
-        }
-
-        .signature {
-            text-align: right;
-            font-size: 1.3rem;
-            color: #e94560;
-            margin-top: 15px;
-        }
-
-        /* Volcanoes */
-        .volcano {
-            position: fixed;
-            font-size: 3.5rem;
             cursor: pointer;
-            transition: transform 0.3s;
             z-index: 40;
+            transition: transform 0.3s;
         }
 
-        .volcano:hover {
+        .vol:hover {
             transform: scale(1.2);
         }
 
-        .volcano-1 { top: 10%; left: 5%; }
-        .volcano-2 { top: 10%; right: 5%; }
-        .volcano-3 { bottom: 10%; left: 5%; }
-        .volcano-4 { bottom: 10%; right: 5%; }
+        .tl { top: 10%; left: 5%; }
+        .tr { top: 10%; right: 5%; }
+        .bl { bottom: 10%; left: 5%; }
+        .br { bottom: 10%; right: 5%; }
 
-        .love-emoji {
+        .erupt {
             position: fixed;
-            font-size: 2rem;
-            animation: erupt 2s ease-out forwards;
+            font-size: 1.5rem;
+            animation: pop 1.5s forwards;
             pointer-events: none;
             z-index: 35;
         }
 
-        @keyframes erupt {
-            0% {
-                transform: translate(0, 0) scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty)) scale(1.5);
-                opacity: 0;
-            }
+        @keyframes pop {
+            0% { transform: translate(0,0) scale(0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
         }
 
-        /* Title */
-        .main-title {
-            text-align: center;
-            color: #eaeaea;
-            font-size: 3.5rem;
-            margin-top: 40px;
-            text-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #a0a0a0;
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
-
-        /* Flirty Text Emojis */
-        .flirty-text-emoji {
+        .flirt {
             position: fixed;
+            font-size: 2rem;
             cursor: pointer;
-            font-size: 2.5rem;
+            animation: bounce 2s infinite;
             z-index: 20;
             transition: transform 0.3s;
-            animation: fadeFloat 3s ease-in-out infinite;
         }
 
-        .flirty-text-emoji:hover {
+        .flirt:hover {
             transform: scale(1.3);
         }
 
-        @keyframes fadeFloat {
-            0%, 100% { opacity: 0.6; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-15px); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
-        .flirty-popup {
+        .flirtMsg {
             position: fixed;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 20px;
-            border-radius: 15px;
-            font-size: 1.2rem;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
             color: #e94560;
-            font-family: 'Dancing Script', cursive;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-size: 1.1rem;
             z-index: 250;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            max-width: 250px;
+            display: none;
+            max-width: 220px;
             text-align: center;
             border: 2px solid #ffb6c1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .flirty-popup.active {
-            opacity: 1;
-            visibility: visible;
+        .flirtMsg.show {
+            display: block;
         }
 
-        /* Music Control */
-        .music-control {
+        .musicBtn {
             position: fixed;
             top: 20px;
             right: 20px;
-            z-index: 400;
             background: rgba(255,255,255,0.1);
             border: 2px solid rgba(255,255,255,0.3);
             color: white;
             padding: 10px 20px;
             border-radius: 30px;
             cursor: pointer;
+            z-index: 400;
             font-family: Arial, sans-serif;
-            transition: all 0.3s;
         }
 
-        .music-control:hover {
+        .musicBtn:hover {
             background: rgba(233, 69, 96, 0.3);
         }
 
-        .music-control.playing {
-            background: rgba(233, 69, 96, 0.5);
-        }
-
-        /* YouTube Player */
-        .youtube-container {
+        #ytBox {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 350px;
-            height: 200px;
+            width: 300px;
+            height: 170px;
             z-index: 500;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: none;
+            border-radius: 10px;
+            overflow: hidden;
             border: 3px solid #e94560;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .youtube-container.active {
+        #ytBox.show {
             display: block;
         }
 
-        .youtube-container iframe {
+        #ytBox iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
 
-        .close-youtube {
+        .ytClose {
             position: absolute;
             top: 5px;
             right: 5px;
             background: rgba(233, 69, 96, 0.9);
             color: white;
             border: none;
-            width: 30px;
-            height: 30px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 16px;
             z-index: 501;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-youtube:hover {
-            background: #e94560;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Initial Screen -->
-    <div class="initial-screen" id="initialScreen">
-        <button class="tap-button" onclick="enterSite()">Tap if you remember us</button>
-        <p class="initial-text">K + I</p>
+    <!-- Start -->
+    <div id="startScreen">
+        <button class="tapBtn" onclick="start()">Tap if you remember us</button>
+        <p class="ki">K + I</p>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content" id="mainContent">
-        <h1 class="main-title">For Ivy</h1>
-        <p class="subtitle">Some connections never fade...</p>
+    <!-- Main -->
+    <div id="mainScreen">
+        <h1>For Ivy</h1>
 
-        <!-- Music Control -->
-        <div class="music-control" onclick="toggleMusic()" id="musicBtn">🎵 Play Music</div>
-
-        <!-- Flirty Text Emojis (🤭) -->
-        <div class="flirty-text-emoji" style="top: 15%; left: 10%; animation-delay: 0s;" onclick="showFlirty(0, this)">🤭</div>
-        <div class="flirty-text-emoji" style="top: 25%; right: 10%; animation-delay: 0.5s;" onclick="showFlirty(1, this)">🤭</div>
-        <div class="flirty-text-emoji" style="top: 70%; left: 8%; animation-delay: 1s;" onclick="showFlirty(2, this)">🤭</div>
-        <div class="flirty-text-emoji" style="top: 80%; right: 8%; animation-delay: 1.5s;" onclick="showFlirty(3, this)">🤭</div>
-        <div class="flirty-text-emoji" style="top: 45%; left: 5%; animation-delay: 2s;" onclick="showFlirty(4, this)">🤭</div>
-        <div class="flirty-text-emoji" style="top: 55%; right: 5%; animation-delay: 2.5s;" onclick="showFlirty(5, this)">🤭</div>
-
-        <!-- Flirty Popup -->
-        <div class="flirty-popup" id="flirtyPopup"></div>
-
-        <!-- Floating Elements Container -->
-        <div id="floatingContainer"></div>
-
-        <!-- Overlay -->
-        <div class="overlay" id="overlay" onclick="closeAll()"></div>
-
-        <!-- Note Popup -->
-        <div class="note-popup" id="notePopup">
-            <button class="close-btn" onclick="closeNote()">×</button>
-            <h3 id="noteTitle"></h3>
-            <p id="noteContent"></p>
+        <button class="musicBtn" onclick="toggleMusic()" id="mBtn">🎵 Play</button>
+        
+        <div id="ytBox">
+            <button class="ytClose" onclick="stopMusic()">×</button>
+            <iframe id="ytFrame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
-        <!-- Envelope -->
-        <div class="envelope-container">
-            <div class="envelope" onclick="openLetter()">
-                <span class="envelope-emoji">💌</span>
-                <span class="envelope-text">Open</span>
-            </div>
+        <div class="flirt" style="top:15%;left:10%" onclick="showFlirt(0,this)">🤭</div>
+        <div class="flirt" style="top:25%;right:10%" onclick="showFlirt(1,this)">🤭</div>
+        <div class="flirt" style="top:70%;left:8%" onclick="showFlirt(2,this)">🤭</div>
+        <div class="flirt" style="top:80%;right:8%" onclick="showFlirt(3,this)">🤭</div>
+        <div class="flirt" style="top:45%;left:5%" onclick="showFlirt(4,this)">🤭</div>
+        <div class="flirt" style="top:55%;right:5%" onclick="showFlirt(5,this)">🤭</div>
+        
+        <div class="flirtMsg" id="flirtBox"></div>
+
+        <div id="heartBox"></div>
+
+        <div class="env" onclick="openLetter()">
+            <span>💌</span>
+            <span>Open</span>
         </div>
 
-        <!-- Long Message -->
-        <div class="long-message-modal" id="longMessage">
-            <button class="close-btn" onclick="closeLetter()" style="font-size: 2rem;">×</button>
-            <h2>My Dearest Ivy,</h2>
-            <p>Every moment without you feels like a lifetime. I miss the way you make my heart race with just a simple look.</p>
-            <p>The silence between us speaks louder than words ever could. I crave your voice, your laugh, your everything.</p>
-            <p>They say distance makes the heart grow fonder, but this is torture. I need you here, now, always.</p>
-            <p>You are the first thought in my morning and the last prayer at night. No one compares to you, Ivy.</p>
-            <p>This spark between us? It's a wildfire waiting to happen. I'm burning for you.</p>
-            <p class="signature">Yours completely,<br>K</p>
+        <div id="overlay" onclick="closeModals()"></div>
+        
+        <div class="modal" id="letterModal">
+            <button class="xBtn" onclick="closeModals()">×</button>
+            <h2 style="color:#e94560;margin-bottom:15px;">My Dearest Ivy,</h2>
+            <p style="font-family:Arial;line-height:1.8;color:#444;margin-bottom:10px;">
+                Every moment without you feels like a lifetime. I miss the way you make my heart race with just a simple look.
+            </p>
+            <p style="font-family:Arial;line-height:1.8;color:#444;margin-bottom:10px;">
+                The silence between us speaks louder than words. I crave your voice, your laugh, your everything.
+            </p>
+            <p style="font-family:Arial;line-height:1.8;color:#444;margin-bottom:10px;">
+                This spark between us? It's a wildfire waiting to happen. I'm burning for you.
+            </p>
+            <p style="text-align:right;color:#e94560;margin-top:15px;font-size:1.3rem;">Yours completely,<br>K</p>
         </div>
 
-        <!-- Four Volcanoes -->
-        <div class="volcano volcano-1" onclick="erupt(this)">🌋</div>
-        <div class="volcano volcano-2" onclick="erupt(this)">🌋</div>
-        <div class="volcano volcano-3" onclick="erupt(this)">🌋</div>
-        <div class="volcano volcano-4" onclick="erupt(this)">🌋</div>
-
-        <!-- YouTube Player (Hidden initially) -->
-        <div class="youtube-container" id="youtubeContainer">
-            <button class="close-youtube" onclick="closeMusic()">×</button>
-            <iframe id="youtubeFrame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        <div class="modal" id="noteModal">
+            <button class="xBtn" onclick="closeNote()">×</button>
+            <h3 id="nTitle" style="color:#e94560;margin-bottom:10px;"></h3>
+            <p id="nText" style="font-family:Arial;color:#555;"></p>
         </div>
+
+        <div class="vol tl" onclick="boom(this)">🌋</div>
+        <div class="vol tr" onclick="boom(this)">🌋</div>
+        <div class="vol bl" onclick="boom(this)">🌋</div>
+        <div class="vol br" onclick="boom(this)">🌋</div>
     </div>
 
     <script>
-        const notes = [
-            { emoji: '🦋', title: 'The First Hello', content: 'Remember how it all began? That first conversation felt like coming home.' },
-            { emoji: '💖', title: 'Late Nights', content: '2 AM talks about everything. The world slept, but we were alive together.' },
-            { emoji: '🦋', title: 'Your Laugh', content: 'I still hear it. The kind that makes everyone smile without knowing why.' },
-            { emoji: '💖', title: 'The Silence', content: 'Even when we stopped talking, you never left my thoughts.' },
-            { emoji: '🦋', title: 'The Spark', content: 'Embers remain after the fire dies. Our spark never stopped glowing.' },
-            { emoji: '💖', title: 'Everywhere', content: 'I see something beautiful and think of you. You are everywhere to me.' }
+        const myNotes = [
+            {title: 'The First Hello', text: 'Remember how it all began? That first conversation felt like coming home.'},
+            {title: 'Late Nights', text: '2 AM talks about everything. The world slept, but we were alive together.'},
+            {title: 'Your Laugh', text: 'I still hear it. The kind that makes everyone smile without knowing why.'},
+            {title: 'The Silence', text: 'Even when we stopped talking, you never left my thoughts.'},
+            {title: 'The Spark', text: 'Embers remain after the fire dies. Our spark never stopped glowing.'},
+            {title: 'Everywhere', text: 'I see something beautiful and think of you. You are everywhere to me.'}
         ];
 
-        const flirtyTexts = [
+        const myFlirts = [
             "Ivy, you're the reason I believe in magic ✨",
             "Is it hot in here or is it just you? 🔥",
-            "You've been running through my mind all day... and night 💭",
-            "I must be a snowflake, because I've fallen for you ❄️",
-            "Are you a camera? Because every time I look at you, I smile 📸",
+            "You've been running through my mind all day... 💭",
+            "I must be a snowflake, I've fallen for you ❄️",
+            "Every time I look at you, I smile 📸",
             "If you were a vegetable, you'd be a cute-cumber 🥒"
         ];
 
-        // YouTube video ID from your link
-        const youtubeVideoId = 'whNGNi8lAdQ';
-        let musicPlaying = false;
-        let elementsCreated = false;
+        const vid = 'whNGNi8lAdQ';
+        let isMusic = false;
+        let started = false;
 
-        function enterSite() {
-            const initialScreen = document.getElementById('initialScreen');
-            const mainContent = document.getElementById('mainContent');
-            
-            initialScreen.classList.add('hidden');
-            mainContent.classList.add('visible');
-            
-            if (!elementsCreated) {
-                createFloating();
-                elementsCreated = true;
+        function start() {
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('mainScreen').classList.add('visible');
+            if (!started) {
+                makeHearts();
+                started = true;
             }
         }
 
-        function createFloating() {
-            const container = document.getElementById('floatingContainer');
-            container.innerHTML = '';
-            
+        function makeHearts() {
+            const box = document.getElementById('heartBox');
             for (let i = 0; i < 8; i++) {
-                const el = document.createElement('div');
-                const note = notes[i % notes.length];
-                el.className = 'floating-element';
-                el.textContent = note.emoji;
-                el.style.left = Math.random() * 80 + 10 + '%';
-                el.style.top = Math.random() * 60 + 20 + '%';
-                el.style.animationDelay = Math.random() * 5 + 's';
-                el.onclick = (e) => {
-                    e.stopPropagation();
-                    showNote(note);
-                };
-                container.appendChild(el);
+                const h = document.createElement('div');
+                h.className = 'heart';
+                h.innerHTML = i % 2 === 0 ? '🦋' : '💖';
+                h.style.left = (Math.random() * 80 + 10) + '%';
+                h.style.top = (Math.random() * 60 + 20) + '%';
+                h.style.animationDelay = (Math.random() * 4) + 's';
+                h.onclick = function() { showNote(i); };
+                box.appendChild(h);
             }
         }
 
-        function showFlirty(index, element) {
-            const popup = document.getElementById('flirtyPopup');
-            const rect = element.getBoundingClientRect();
-            
-            popup.textContent = flirtyTexts[index];
-            
-            // Position above the emoji
-            let left = rect.left - 100;
-            let top = rect.top - 80;
-            
-            // Keep in bounds
-            if (left < 10) left = 10;
-            if (left > window.innerWidth - 260) left = window.innerWidth - 260;
-            
-            popup.style.left = left + 'px';
-            popup.style.top = top + 'px';
-            popup.classList.add('active');
-            
-            setTimeout(() => {
-                popup.classList.remove('active');
-            }, 3000);
-        }
-
-        function showNote(note) {
-            document.getElementById('noteTitle').textContent = note.title;
-            document.getElementById('noteContent').textContent = note.content;
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById('notePopup').classList.add('active');
+        function showNote(idx) {
+            const n = myNotes[idx % myNotes.length];
+            document.getElementById('nTitle').innerText = n.title;
+            document.getElementById('nText').innerText = n.text;
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('noteModal').classList.add('open');
         }
 
         function closeNote() {
-            document.getElementById('notePopup').classList.remove('active');
-            if (!document.getElementById('longMessage').classList.contains('active')) {
-                document.getElementById('overlay').classList.remove('active');
+            document.getElementById('noteModal').classList.remove('open');
+            if (!document.getElementById('letterModal').classList.contains('open')) {
+                document.getElementById('overlay').classList.remove('open');
             }
         }
 
         function openLetter() {
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById('longMessage').classList.add('active');
+            document.getElementById('overlay').classList.add('open');
+            document.getElementById('letterModal').classList.add('open');
         }
 
-        function closeLetter() {
-            document.getElementById('longMessage').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
+        function closeModals() {
+            document.getElementById('letterModal').classList.remove('open');
+            document.getElementById('noteModal').classList.remove('open');
+            document.getElementById('overlay').classList.remove('open');
         }
 
-        function closeAll() {
-            closeNote();
-            closeLetter();
+        function showFlirt(idx, el) {
+            const box = document.getElementById('flirtBox');
+            const rect = el.getBoundingClientRect();
+            box.innerText = myFlirts[idx];
+            box.style.left = rect.left + 'px';
+            box.style.top = (rect.top - 60) + 'px';
+            box.classList.add('show');
+            setTimeout(function() {
+                box.classList.remove('show');
+            }, 3000);
         }
 
-        function erupt(volcano) {
-            const rect = volcano.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
+        function boom(v) {
+            const rect = v.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
             
-            for (let i = 0; i < 20; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div'
+            for (let i = 0; i < 15; i++) {
+                setTimeout(function() {
+                    const e = document.createElement('div');
+                    e.className = 'erupt';
+                    const hearts = ['❤️', '💖', '💕', '💗'];
+                    e.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+                    e.style.left = cx + 'px';
+                    e.style.top = cy + 'px';
+                    const ang = (Math.PI * 2 * i) / 15;
+                    const dist = 100 + Math.random() * 100;
+                    e.style.setProperty('--tx', (Math.cos(ang) * dist) + 'px');
+                    e.style.setProperty('--ty', (Math.sin(ang) * dist - 50) + 'px');
+                    document.body.appendChild(e);
+                    setTimeout(function() {
+                        e.remove();
+                    }, 1500);
+                }, i * 30);
+            }
+        }
+
+        function toggleMusic() {
+            const btn = document.getElementById('mBtn');
+            const box = document.getElementById('ytBox');
+            const frame = document.getElementById('ytFrame');
+            
+            if (!isMusic) {
+                frame.src = 'https://www.youtube.com/embed/' + vid + '?autoplay=1&loop=1&playlist=' + vid;
+                box.classList.add('show');
+                btn.innerText = '🎶 Close';
+                isMusic = true;
+            } else {
+                stopMusic();
+            }
+        }
+
+        function stopMusic() {
+            const btn = document.getElementById('mBtn');
+            const box = document.getElementById('ytBox');
+            const frame = document.getElementById('ytFrame');
+            
+            frame.src = '';
+            box.classList.remove('show');
+            btn.innerText = '🎵 Play';
+            isMusic = false;
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModals();
+                if (isMusic) stopMusic();
+            }
+        });
+    </script>
+</body>
+</html>
