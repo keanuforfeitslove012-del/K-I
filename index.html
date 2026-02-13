@@ -40,6 +40,7 @@
         .initial-screen.hidden {
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
         }
 
         .tap-button {
@@ -80,12 +81,12 @@
             transition: opacity 2s ease-in;
             min-height: 100vh;
             position: relative;
-            display: none;
+            visibility: hidden;
         }
 
         .main-content.visible {
             opacity: 1;
-            display: block;
+            visibility: visible;
         }
 
         /* Floating Elements */
@@ -164,11 +165,14 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 150;
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
         }
 
         .overlay.active {
-            display: block;
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Envelope - CENTERED */
@@ -343,14 +347,17 @@
             font-family: 'Dancing Script', cursive;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             z-index: 250;
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
             max-width: 250px;
             text-align: center;
             border: 2px solid #ffb6c1;
         }
 
         .flirty-popup.active {
-            display: block;
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Music Control */
@@ -366,31 +373,37 @@
             border-radius: 30px;
             cursor: pointer;
             font-family: Arial, sans-serif;
+            transition: all 0.3s;
         }
 
         .music-control:hover {
             background: rgba(233, 69, 96, 0.3);
         }
 
+        .music-control.playing {
+            background: rgba(233, 69, 96, 0.5);
+        }
+
         /* YouTube Player */
-        .youtube-player {
+        .youtube-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
+            width: 350px;
+            height: 200px;
             z-index: 500;
-            width: 300px;
-            height: 170px;
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             display: none;
+            border: 3px solid #e94560;
         }
 
-        .youtube-player.active {
+        .youtube-container.active {
             display: block;
         }
 
-        .youtube-player iframe {
+        .youtube-container iframe {
             width: 100%;
             height: 100%;
             border: none;
@@ -400,15 +413,22 @@
             position: absolute;
             top: 5px;
             right: 5px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(233, 69, 96, 0.9);
             color: white;
             border: none;
-            width: 25px;
-            height: 25px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             z-index: 501;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-youtube:hover {
+            background: #e94560;
         }
     </style>
 </head>
@@ -478,10 +498,10 @@
         <div class="volcano volcano-3" onclick="erupt(this)">🌋</div>
         <div class="volcano volcano-4" onclick="erupt(this)">🌋</div>
 
-        <!-- YouTube Player -->
-        <div class="youtube-player" id="youtubePlayer">
-            <button class="close-youtube" onclick="closeYoutube()">×</button>
-            <iframe id="youtubeFrame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <!-- YouTube Player (Hidden initially) -->
+        <div class="youtube-container" id="youtubeContainer">
+            <button class="close-youtube" onclick="closeMusic()">×</button>
+            <iframe id="youtubeFrame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -504,17 +524,28 @@
             "If you were a vegetable, you'd be a cute-cumber 🥒"
         ];
 
+        // YouTube video ID from your link
+        const youtubeVideoId = 'whNGNi8lAdQ';
         let musicPlaying = false;
-        let youtubeOpen = false;
+        let elementsCreated = false;
 
         function enterSite() {
-            document.getElementById('initialScreen').classList.add('hidden');
-            document.getElementById('mainContent').classList.add('visible');
-            createFloating();
+            const initialScreen = document.getElementById('initialScreen');
+            const mainContent = document.getElementById('mainContent');
+            
+            initialScreen.classList.add('hidden');
+            mainContent.classList.add('visible');
+            
+            if (!elementsCreated) {
+                createFloating();
+                elementsCreated = true;
+            }
         }
 
         function createFloating() {
             const container = document.getElementById('floatingContainer');
+            container.innerHTML = '';
+            
             for (let i = 0; i < 8; i++) {
                 const el = document.createElement('div');
                 const note = notes[i % notes.length];
@@ -523,7 +554,10 @@
                 el.style.left = Math.random() * 80 + 10 + '%';
                 el.style.top = Math.random() * 60 + 20 + '%';
                 el.style.animationDelay = Math.random() * 5 + 's';
-                el.onclick = () => showNote(note);
+                el.onclick = (e) => {
+                    e.stopPropagation();
+                    showNote(note);
+                };
                 container.appendChild(el);
             }
         }
@@ -533,8 +567,17 @@
             const rect = element.getBoundingClientRect();
             
             popup.textContent = flirtyTexts[index];
-            popup.style.left = rect.left + 'px';
-            popup.style.top = (rect.top - 60) + 'px';
+            
+            // Position above the emoji
+            let left = rect.left - 100;
+            let top = rect.top - 80;
+            
+            // Keep in bounds
+            if (left < 10) left = 10;
+            if (left > window.innerWidth - 260) left = window.innerWidth - 260;
+            
+            popup.style.left = left + 'px';
+            popup.style.top = top + 'px';
             popup.classList.add('active');
             
             setTimeout(() => {
@@ -551,7 +594,9 @@
 
         function closeNote() {
             document.getElementById('notePopup').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
+            if (!document.getElementById('longMessage').classList.contains('active')) {
+                document.getElementById('overlay').classList.remove('active');
+            }
         }
 
         function openLetter() {
@@ -576,38 +621,4 @@
             
             for (let i = 0; i < 20; i++) {
                 setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'love-emoji';
-                    heart.textContent = ['❤️','💖','💕','💗'][Math.floor(Math.random()*4)];
-                    heart.style.left = x + 'px';
-                    heart.style.top = y + 'px';
-                    
-                    const angle = (Math.PI * 2 * i) / 20;
-                    const dist = 100 + Math.random() * 150;
-                    heart.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
-                    heart.style.setProperty('--ty', Math.sin(angle) * dist - 100 + 'px');
-                    
-                    document.body.appendChild(heart);
-                    setTimeout(() => heart.remove(), 2000);
-                }, i * 30);
-            }
-        }
-
-        function toggleMusic() {
-            const btn = document.getElementById('musicBtn');
-            const player = document.getElementById('youtubePlayer');
-            const frame = document.getElementById('youtubeFrame');
-            
-            if (!youtubeOpen) {
-                // Extract video ID from YouTube URL
-                const videoId = 'x6QJPJO2w40';
-                frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}`;
-                player.classList.add('active');
-                btn.textContent = '🎶 Close Music';
-                youtubeOpen = true;
-            } else {
-                closeYoutube();
-            }
-        }
-
-     
+                    const heart = document.createElement('div'
